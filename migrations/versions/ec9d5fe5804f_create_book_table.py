@@ -25,6 +25,7 @@ def upgrade() -> None:
         sa.Column("isbn", sa.String),
         sa.Column("title", sa.String),
         sa.Column("author", sa.String()),
+        sa.Column("subject", sa.String()),
     )
 
 
