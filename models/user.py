@@ -5,7 +5,7 @@ from db import Base
 
 
 class Student(Base):
-    __tablename__ = "student_account"
+    __tablename__ = "user_account"
 
     id: Mapped[int] = mapped_column(primary_key=True)
     email: Mapped[str]
