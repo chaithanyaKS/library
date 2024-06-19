@@ -15,18 +15,27 @@ def fetch_all(db: Session) -> list[models.Book]:
     return db.query(models.Book).all()
 
 
-def borrow(db: Session, books: BookBorrowReturn, user_id: int):
-    count = db.query(func.count(models.Borrowing.user_id)).scalar()
+def borrow(db: Session, books: BookBorrowReturn, email: str):
+    user = db.query(models.User).where(models.User.email == email).one()
+    count = (
+        db.query(func.count(models.Borrowing.user_id))
+        .where(models.Borrowing.user_id == user.id)
+        .scalar()
+    )
     if count >= 3:
         raise Exception("Exceeded borrowing limit")
 
-    borrowings = [Borrowing(book_id=isbn, user_id=user_id) for isbn in books.isbns]
+    borrowings = [Borrowing(book_id=isbn, user_id=user.id) for isbn in books.isbns]
     db.add_all(borrowings)
     db.commit()
 
 
-def return_book(db: Session, books: BookBorrowReturn, user_id: int):
-    delete(Borrowing).where(Borrowing.book_id.in_(books.isbns))
+def return_book(db: Session, books: BookBorrowReturn, email: str):
+    user = db.query(models.User).where(models.User.email == email).one()
+    delete(Borrowing).filter(
+        Borrowing.book_id.in_(books.isbns),
+        Borrowing.user_id == user.id,
+    )
 
 
 def create_book(db: Session, book: BookCreate) -> models.Book:

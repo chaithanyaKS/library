@@ -31,4 +31,4 @@ def authenticate_user(credentials: Annotated[HTTPBasicCredentials, Depends(secur
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="invalid username or password",
         )
-    return user
+    return user.email

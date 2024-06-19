@@ -1,8 +1,11 @@
+from typing import Annotated
+
 from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import HTTPBasicCredentials
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
-from dependencies import get_db
+from dependencies import authenticate_user, get_db
 from schemas import book as book_schema
 from services import book as book_service
 
@@ -16,8 +19,11 @@ def get_all_books(db: Session = Depends(get_db)):
 
 
 @router.post("/", response_model=book_schema.Book)
-def create(book: book_schema.BookCreate, db: Session = Depends(get_db)):
-    print("in router", book)
+def create(
+    credentials: Annotated[HTTPBasicCredentials, Depends(authenticate_user)],
+    book: book_schema.BookCreate,
+    db: Session = Depends(get_db),
+):
     db_book = book_service.fetch_by_isbn(db, book.isbn)
     if db_book:
         raise HTTPException(
@@ -39,15 +45,18 @@ def get_book(isbn: str, db: Session = Depends(get_db)) -> book_schema.Book:
 
 
 @router.post("/borrow/")
-def borrow(books: book_schema.BookBorrowReturn, db: Session = Depends(get_db)):
+def borrow(
+    credentials: Annotated[HTTPBasicCredentials, Depends(authenticate_user)],
+    books: book_schema.BookBorrowReturn,
+    db: Session = Depends(get_db),
+):
     if len(books.isbns) > 3:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Can only borrow 3 books at a time",
         )
-    user_id = 1
     try:
-        book_service.borrow(db, books, user_id)
+        book_service.borrow(db, books, credentials.username)
         return {"detail": "borrowing successful"}
     except IntegrityError:
         raise HTTPException(
@@ -56,12 +65,15 @@ def borrow(books: book_schema.BookBorrowReturn, db: Session = Depends(get_db)):
 
 
 @router.post("/return/")
-def return_book(books: book_schema.BookBorrowReturn, db: Session = Depends(get_db)):
+def return_book(
+    credentials: Annotated[HTTPBasicCredentials, Depends(authenticate_user)],
+    books: book_schema.BookBorrowReturn,
+    db: Session = Depends(get_db),
+):
     if len(books.isbns) > 3:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Can only borrow 3 books at a time",
         )
-    user_id = 1
-    book_service.return_book(db, books, user_id)
+    book_service.return_book(db, books, credentials.username)
     return {"detail": "returning successful"}
