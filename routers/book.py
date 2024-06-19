@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session
 
 from routers.user import get_db
@@ -35,3 +36,32 @@ def get_book(isbn: str, db: Session = Depends(get_db)) -> book_schema.Book:
             status_code=status.HTTP_404_NOT_FOUND, detail=f"invalid isbn {isbn}"
         )
     return book
+
+
+@router.post("/borrow/")
+def borrow(books: book_schema.BookBorrowReturn, db: Session = Depends(get_db)):
+    if len(books.isbns) > 3:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Can only borrow 3 books at a time",
+        )
+    user_id = 1
+    try:
+        book_service.borrow(db, books, user_id)
+        return {"detail": "borrowing successful"}
+    except IntegrityError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST, detail="cannot borrow same book"
+        )
+
+
+@router.post("/return/")
+def return_book(books: book_schema.BookBorrowReturn, db: Session = Depends(get_db)):
+    if len(books.isbns) > 3:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Can only borrow 3 books at a time",
+        )
+    user_id = 1
+    book_service.return_book(db, books, user_id)
+    return {"detail": "returning successful"}

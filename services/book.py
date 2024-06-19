@@ -1,7 +1,10 @@
+from httpx import delete
+from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 import models
-from schemas.book import BookCreate
+from models.book import Borrowing
+from schemas.book import BookBorrowReturn, BookCreate
 
 
 def fetch_by_isbn(db: Session, isbn: str) -> models.Book | None:
@@ -10,6 +13,20 @@ def fetch_by_isbn(db: Session, isbn: str) -> models.Book | None:
 
 def fetch_all(db: Session) -> list[models.Book]:
     return db.query(models.Book).all()
+
+
+def borrow(db: Session, books: BookBorrowReturn, user_id: int):
+    count = db.query(func.count(models.Borrowing.user_id)).scalar()
+    if count >= 3:
+        raise Exception("Exceeded borrowing limit")
+
+    borrowings = [Borrowing(book_id=isbn, user_id=user_id) for isbn in books.isbns]
+    db.add_all(borrowings)
+    db.commit()
+
+
+def return_book(db: Session, books: BookBorrowReturn, user_id: int):
+    delete(Borrowing).where(Borrowing.book_id.in_(books.isbns))
 
 
 def create_book(db: Session, book: BookCreate) -> models.Book:

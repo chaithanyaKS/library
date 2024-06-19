@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, PositiveInt
 
 
 class BookBase(BaseModel):
@@ -15,3 +15,7 @@ class BookCreate(BookBase):
 class Book(BookBase):
     class Meta:
         orm_mode = True
+
+
+class BookBorrowReturn(BaseModel):
+    isbns: list[str]

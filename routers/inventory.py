@@ -14,7 +14,7 @@ def get_inventory(db: Session = Depends(get_db)):
     return inventory_service.fetch_all(db)
 
 
-@router.patch("/{isbn}", response_model=inventory_schema.Inventory)
+@router.patch("/{isbn}/", response_model=inventory_schema.Inventory)
 def update_count(
     isbn: str,
     inventory: inventory_schema.InventoryUpdate,
