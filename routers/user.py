@@ -17,6 +17,11 @@ def get_db():
 router = APIRouter()
 
 
+@router.get("/users/", response_model=list[user_schema.User])
+def get_users(db: Session = Depends(get_db)):
+    return user_service.fetch_all(db)
+
+
 @router.get("/users/{user_id}/", response_model=user_schema.User)
 def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     user = user_service.get_by_id(db, user_id)

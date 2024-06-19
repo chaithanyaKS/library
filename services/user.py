@@ -4,6 +4,10 @@ import models
 from schemas import user as user_schema
 
 
+def fetch_all(db: Session) -> list[models.User]:
+    return db.query(models.User).all()
+
+
 def get_by_id(db: Session, user_id: int):
     return db.query(models.User).filter(models.User.id == user_id).first()
 
