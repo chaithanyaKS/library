@@ -1,18 +1,9 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
-from db import SessionLocal
+from dependencies import get_db
 from schemas import user as user_schema
 from services import user as user_service
-
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close()
-
 
 router = APIRouter()
 

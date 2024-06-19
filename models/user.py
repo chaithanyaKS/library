@@ -92,14 +92,13 @@ class User(Base):
             raise ValueError("Unable to split hashed password")
         return elements
 
-    @classmethod
-    def check_password(cls, hashed_password, password) -> bool:
-        prefix, iterations, salt, current_password = cls._split_stored_password(
-            hashed_password
+    def check_password(self, password) -> bool:
+        prefix, iterations, salt, current_password = self._split_stored_password(
+            self.password
         )
-        h_password = cls._hash_password(password, salt, int(iterations))
+        h_password = self._hash_password(password, salt, int(iterations))
 
-        return h_password == hashed_password
+        return h_password == self.password
 
     def __setattr__(self, name: str, value: Any):
         """

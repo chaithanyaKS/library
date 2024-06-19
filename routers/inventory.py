@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import NoResultFound
 from sqlalchemy.orm import Session
 
-from routers.user import get_db
+from dependencies import get_db
 from schemas import inventory as inventory_schema
 from services import inventory as inventory_service
 
