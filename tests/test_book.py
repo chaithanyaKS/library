@@ -22,13 +22,10 @@ def test_fetch_book_by_isbn(book):
 def test_add_book(auth_header):
     endpoint = "/api/v1/books/"
     body = {"title": "some book", "isbn": "2"}
-    print(auth_header)
 
     res1 = client.get("/api/v1/users/1/")
     data = res1.json()
-    print(data)
 
     res = client.post(endpoint, json=body, headers=auth_header)
-    print(res.headers)
 
     assert res.status_code == status.HTTP_201_CREATED

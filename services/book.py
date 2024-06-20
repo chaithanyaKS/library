@@ -54,7 +54,6 @@ def return_book(db: Session, book: BookBorrowReturn):
 
 
 def create_book(db: Session, book: BookCreate) -> m.Book:
-    print(book)
     db_book = m.Book(
         isbn=book.isbn,
         title=book.title,

@@ -5,8 +5,6 @@ from models import Inventory
 
 def fetch_all(db: Session) -> list[Inventory]:
     db_inventory = db.query(Inventory).options(joinedload(Inventory.book)).all()
-    for inv in db_inventory:
-        print(inv.book.isbn)
     return db_inventory
 
 

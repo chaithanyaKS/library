@@ -28,7 +28,6 @@ def get_test_db():
 def authenticate_user(credentials: Annotated[HTTPBasicCredentials, Depends(security)]):
     db = next(get_db())
     user = user_service.get_by_email(db, credentials.username)
-    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
