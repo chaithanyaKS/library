@@ -36,14 +36,22 @@ def create(
         return db_book
 
 
+@router.get("/popular/", response_model=list[book_schema.Book])
+def get_popular_books(db: Session = Depends(get_db)):
+    popular_books = book_service.popular(db)
+
+    return popular_books
+
+
 @router.get("/{isbn}/")
 def get_book(isbn: str, db: Session = Depends(get_db)) -> book_schema.Book:
-    book = book_service.fetch_by_isbn(db, isbn)
-    if not book:
+    try:
+        book = book_service.fetch_by_isbn(db, isbn)
+        return book
+    except NoResultFound:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail=f"invalid isbn {isbn}"
         )
-    return book
 
 
 @router.post("/borrow/")
@@ -73,7 +81,7 @@ def return_book(
     db: Session = Depends(get_db),
 ):
     try:
-        book_service.return_book(db, book, email)
+        book_service.return_book(db, book)
         return {"detail": "returning successful"}
     except BookNotReturnableError:
         raise HTTPException(
