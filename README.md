@@ -33,3 +33,23 @@ docker build -t library:latest .
 ```bash
 docker run -p 8000:8000 --env-file .env-example library
 ```
+
+## Project Structure
+
+### Database
+![ER Diagram](./images/library.svg)
+
+1. User table is used to keep track of user data
+2. Borrowing table is used to keep track of all the books that have been issued.
+3. Inventory table is used to keep track of total available and borrowed count of a particular book.
+4. Book table is used to keep track of book details
+
+
+### Modules
+- `images` - contains the readme file images
+- `migrations` - contains the database migrations
+- `models` - contains database models defined using sqlalchemy
+- `routers` - contains the routing logic for all the apis
+- `schemas` - contains pydantic models for serializing and deserializing data
+- `services` - contains business logic
+- `tests` - contains tests
