@@ -18,8 +18,8 @@ class Book(Base):
 class Borrowing(Base):
     __tablename__ = "borrowing"
     id: Mapped[int] = mapped_column(primary_key=True)
-    book_id: Mapped[str] = mapped_column(ForeignKey(column="book.isbn"))
+    inventory_id: Mapped[str] = mapped_column(ForeignKey(column="inventory.id"))
     user_id: Mapped[int] = mapped_column(ForeignKey(column="user_account.id"))
     __table_args__ = (
-        UniqueConstraint("book_id", "user_id", name="uniq_book_id_user_id"),
+        UniqueConstraint("inventory_id", "user_id", name="uniq_inventory_id_user_id"),
     )

@@ -18,4 +18,4 @@ class Book(BookBase):
 
 
 class BookBorrowReturn(BaseModel):
-    isbns: list[str]
+    isbn: str

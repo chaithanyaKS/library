@@ -24,6 +24,7 @@ def upgrade() -> None:
         sa.Column("id", sa.Integer, primary_key=True),
         sa.Column("book_id", sa.String, sa.ForeignKey("Book.isbn"), unique=True),
         sa.Column("count", sa.Integer),
+        sa.Column("borrowed_count", sa.Integer),
     )
 
 
