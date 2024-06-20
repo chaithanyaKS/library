@@ -3,7 +3,7 @@ from typing import Annotated
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
-from db import SessionLocal
+from db import SessionLocal, TestingSessionLocal
 from services import user as user_service
 
 security = HTTPBasic()
@@ -11,6 +11,14 @@ security = HTTPBasic()
 
 def get_db():
     db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+
+
+def get_test_db():
+    db = TestingSessionLocal()
     try:
         yield db
     finally:

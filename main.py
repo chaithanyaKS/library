@@ -1,18 +1,12 @@
-from typing import Annotated
+from fastapi import FastAPI
 
-from fastapi import Depends, FastAPI
-from fastapi.security import HTTPBasicCredentials
-
-from dependencies import authenticate_user
 from routers import book, inventory, user
 
 app = FastAPI()
 
 
 @app.get("/ping")
-def ping(
-    credentials: Annotated[HTTPBasicCredentials, Depends(authenticate_user)],
-):
+def ping():
     return {"detail": "Service up and running"}
 
 

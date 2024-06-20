@@ -21,7 +21,7 @@ def get_user_by_id(user_id: int, db: Session = Depends(get_db)):
     return user
 
 
-@router.post("/users/")
+@router.post("/users/", status_code=status.HTTP_201_CREATED)
 def create_user(user: user_schema.UserCreate, db=Depends(get_db)) -> user_schema.User:
     db_user = user_service.get_by_email(db, user.email)
     if db_user:
