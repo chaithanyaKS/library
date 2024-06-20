@@ -9,7 +9,7 @@ from dependencies import authenticate_user, get_db
 from schemas import inventory as inventory_schema
 from services import inventory as inventory_service
 
-router = APIRouter(prefix="/inventory")
+router = APIRouter(prefix="/inventory", tags=["inventory"])
 
 
 @router.get("/", response_model=list[inventory_schema.Inventory])

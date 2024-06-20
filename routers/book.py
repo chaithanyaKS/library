@@ -10,7 +10,7 @@ from exceptions import BookNotAvaibaleError, BookNotReturnableError
 from schemas import book as book_schema
 from services import book as book_service
 
-router = APIRouter(prefix="/books")
+router = APIRouter(prefix="/books", tags=["book"])
 
 
 @router.get("/", response_model=list[book_schema.Book])
