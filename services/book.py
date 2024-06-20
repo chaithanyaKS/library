@@ -3,7 +3,11 @@ from sqlalchemy import func
 from sqlalchemy.orm import Session
 
 import models as m
-from exceptions import BookNotAvaibaleError, BookNotReturnableError
+from exceptions import (
+    BookNotAvaibaleError,
+    BookNotReturnableError,
+    BorrowingExceededError,
+)
 from schemas.book import BookBorrowReturn, BookCreate
 
 
@@ -24,7 +28,7 @@ def borrow(db: Session, book: BookBorrowReturn, email: HTTPBasicCredentials):
         .scalar()
     )
     if count >= 3:
-        raise Exception("Exceeded borrowing limit")
+        raise BorrowingExceededError("Exceeded borrowing limit")
 
     inventory = db.query(m.Inventory).filter(m.Inventory.book_id == book.isbn).scalar()
     # check if there are books to borrow

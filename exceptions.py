@@ -4,3 +4,7 @@ class BookNotAvaibaleError(Exception):
 
 class BookNotReturnableError(Exception):
     pass
+
+
+class BorrowingExceededError(Exception):
+    pass

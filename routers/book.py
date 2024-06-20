@@ -6,7 +6,11 @@ from sqlalchemy.exc import IntegrityError, NoResultFound
 from sqlalchemy.orm import Session
 
 from dependencies import authenticate_user, get_db
-from exceptions import BookNotAvaibaleError, BookNotReturnableError
+from exceptions import (
+    BookNotAvaibaleError,
+    BookNotReturnableError,
+    BorrowingExceededError,
+)
 from schemas import book as book_schema
 from services import book as book_service
 
@@ -71,6 +75,11 @@ def borrow(
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="book not available for borrowing",
+        )
+    except BorrowingExceededError:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Only 3 books can be borrowed",
         )
 
 
