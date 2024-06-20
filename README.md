@@ -23,3 +23,13 @@ fastapi dev main.py
 ```
 2. By default the server runs at http://localhost:8000
 3. open http://localhost:8000/docs for swagger documentation
+
+### Starting the server with docker
+1. Build the docker image
+```bash
+docker build -t library:latest .
+```
+2. Run the docker image
+```bash
+docker run -p 8000:8000 --env-file .env-example library
+```
